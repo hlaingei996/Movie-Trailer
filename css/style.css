@@ -1,0 +1,40 @@
+body{
+    font-family: 'Roboto', sans-serif;
+}
+.card-title{
+    width: 100%;
+    background: rgba(000,000,000,0.5);
+}
+.card-image{
+    position: relative;
+}
+.fa-heart{
+    position: absolute;
+    z-index: 1;
+}
+
+@media screen and (min-width:992px){
+    .card .card-content p {
+        min-height: 135px;
+    }
+}
+
+@media screen and (max-width:991px) and (min-width:900px){
+    .card .card-content p {
+        min-height: 105px;
+    }
+
+}
+
+@media screen and (max-width:899px) and (min-width:601px){
+    .card .card-content p {
+        min-height: 150px;
+    }
+
+}
+
+@media screen and (max-width:600px){
+    .card .card-content p {
+        min-height: 80px;
+    }
+}
