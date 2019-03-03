@@ -27,11 +27,18 @@ class Movie extends APIDataModel{
         const favouriteArray =[];
         const data = JSON.parse(localStorage.getItem(key));
         if (data) {
-            //const valueToRemove = data.includes(movieId);
-            //console.log(valueToRemove);
-            data.push(movieId);
             //localStorage.removeItem(key);
-            localStorage.setItem(key, JSON.stringify(data));             
+            const valueToRemove = data.indexOf(movieId);
+            //console.log(valueToRemove);
+            if(valueToRemove > -1){
+                data.splice(valueToRemove, 1);
+                //console.log(data);
+                localStorage.setItem(key, JSON.stringify(data));
+            }
+            else{
+                data.push(movieId);
+                localStorage.setItem(key, JSON.stringify(data));
+            }                                    
         }
         else{
             favouriteArray.push(movieId);
