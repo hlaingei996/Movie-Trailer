@@ -16,19 +16,26 @@ class Controller {
     async init() {
         const movieData = await this.movieListModel
             .fetchUpcomingMovie(this.movieListModel.key);
+        console.log(movieData);
+
         const movieObjects = await this.getUpcomingMovieData(movieData);
+        console.log(movieObjects);
+
         this.displayMovieList(movieObjects);
     }
 
     async displayDetail(id) {
         const detailObject = await this.movieItemModel
-            .fetchMovieDetail(id, this.movieItemModel.key);        
+            .fetchMovieDetail(id, this.movieItemModel.key);
+        console.log(detailObject);
+        
         this.movieDetailView.render(detailObject);
     }
 
     displayMovieList(movieObjects) {
         const templates = [];
         for (const movieObj of movieObjects) {
+            movieObj.updateFavourite(this.movieListModel.favMovies);
             templates.push(this.movieListView.getItemTemplate(movieObj));
         }
 
@@ -42,6 +49,7 @@ class Controller {
     getUpcomingMovieData(data) {
         this.movieObjects = [];
         for (let movie of data) {
+            const isFav=this.movieListModel.favMovies.includes(movie.id.toString());
             let rating = 0;
             if(localStorage.getItem(movie.id)){
                 rating = localStorage.getItem(movie.id);
@@ -55,7 +63,8 @@ class Controller {
                     favourite = true;
                 }
             }
-            const movieObj = new MovieItemModel(movie.id, movie.title, movie.poster_path, movie.overview, "",rating, favourite);
+            console.log(movie.id+"value"+rating);
+            const movieObj = new MovieItemModel(movie.id, movie.title, movie.poster_path, movie.overview, "",rating, favourite,isFav);
             this.movieObjects.push(movieObj);
         }
         return this.movieObjects;
@@ -65,10 +74,18 @@ class Controller {
         this.movieItemModel.setRating(movieId, ratingValue);
         this.movieListView.rateMovie(movieId, ratingValue);
     }
+        favouriteMovie(id){
+        const favMovies=this.movieListModel.favMovies;
+        if(!favMovies.includes(id)){
+        favMovies.push(id);
+             }
+         else{
+        favMovies.splice(favMovies.indexOf(id),1);
+          }
 
-    storeFavourite(key,movieId){
-        this.movieItemModel.setFavourite(key, movieId);
+        this.movieListModel.favMovies=favMovies;
+        this.displayMovieList(this.movieObjects);
     }
-}
+  }
 
 export default Controller;

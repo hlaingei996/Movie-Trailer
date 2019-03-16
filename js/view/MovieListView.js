@@ -5,8 +5,18 @@ class MovieListView {
         this.viewport = document.getElementById("viewport");
         this.viewport.addEventListener('click', (event) => this.detailViewBtnListener(event));
         this.viewport.addEventListener('click', (event) => this.rateMovieListener(event));
-        this.viewport.addEventListener('click', (event) => this.favouriteMovieListener(event));
+        this.home=document.getElementById("home");
+        this.home.addEventListener('click',(event)=> this.homeBtnListener(event));
+
     }
+    homeBtnListener(event){
+        event.preventDefault();
+
+        const targetEle = event.target;
+        
+            this.controller.changeListView();
+        }
+    
 
     detailViewBtnListener(event) {
         event.preventDefault();
@@ -16,30 +26,24 @@ class MovieListView {
             const movieId = targetEle.parentNode.dataset.id;
             this.controller.displayDetail(movieId);
         }
+        else if (targetEle && targetEle.parentNode.classList.contains('favorite-button')) {
+            const movieId = targetEle.parentNode.dataset.id;
+            this.controller.favouriteMovie(movieId);
+        } 
     }
 
     rateMovieListener(event) {
         const targetEle = event.target;
         const movieId = targetEle.parentNode.id;
         const value = targetEle.dataset.value;
-        //console.log("rating",movieId);
+        console.log("rate movie" + targetEle);
         if (targetEle && targetEle.parentNode.classList.contains('star-wrapper')) {
             this.controller.storeRating(movieId, value);
         }
     }
 
-    favouriteMovieListener(event){
-        const targetEle = event.target;
-        const movieId = targetEle.parentNode.id;
-        const key = "Favourite Movie";
-        console.log("favourite", movieId);
-        //const value = targetEle.dataset.value;
-        if (targetEle && targetEle.parentNode.classList.contains('favourite-wrapper')) {
-            this.controller.storeFavourite(key, movieId);
-        }
-    }
-
     getItemTemplate(object) {
+        console.log("getItemTemplate"+object.rating);
         let starContent = "";
         let favouriteStar = "";
 
@@ -51,21 +55,21 @@ class MovieListView {
         }
 
         if(object.favourite){
-            favouriteStar += "<i class='material-icons' id="+object.id+">favorite</i>"        
+            favouriteStar += "<i class='fas fa-heart' id="+object.id+"_"+fav+"></i>"        
         }
         else{
-            favouriteStar += "<i class='material-icons' id="+object.id+">favorite_border</i>"        
+            favouriteStar += "<i class='far fa-heart' id="+object.id+"_fav></i>"        
         }
   
         const result = this.itemTemplate
             .replace("{{this.title}}", object.title)
             .replace("{{this.poster}}", `https://image.tmdb.org/t/p/w400/${object.poster}`)
             .replace("{{this.overview}}", this.getExcerptWords(object.overview))
-            .replace("{{this.id}}", object.id)
+            .replace(/{{this.id}}/g, object.id)
             .replace("{{this.rateId}}", object.id)
+            .replace("{{this.favourite}}", favouriteStar)
             .replace("{{this.ratingStars}}", starContent)
-            .replace("{{this.favouriteId}}", object.id)
-            .replace("{{this.favourite}}", favouriteStar);
+            .replace("{{this.favorite}}", object.isFavourite ? 'favorite' : 'unfavorite');
         
         return result;
     }
@@ -87,24 +91,20 @@ class MovieListView {
     }
 
     rateMovie(movieId, ratingValue) {
-        //console.log("ratingValue" + ratingValue);
+        console.log("ratingValue" + ratingValue);
         for(let rate=1; rate <= 5; rate++){
             const fillStar = document.getElementById(movieId + "_" + rate);
             fillStar.className="far fa-star";
         }
         for (let rate = 1; rate <= ratingValue; rate++) {
             const fillStar = document.getElementById(movieId + "_" + rate);
+            console.log("fillstar" + fillStar);
             if (fillStar.classList.item(0) == 'far') {
                 fillStar.className = "fas fa-star";
             } else {
                 fillStar.className = "far fa-star";
             }
         }
-    }
-
-    favouriteMovie(movieId){
-        const favourite = document.getElementById(movieId);
-        favourite.className = "material-icons";
     }
 }
 

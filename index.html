@@ -16,7 +16,7 @@
   <header>
     <nav class="indigo">
       <div class="nav-wrapper">
-        <ul class="left" id="home">
+        <ul class="left hide-on-med-and-down" id="home">
           <li><a href="#">Home</a></li>
           <li style="display:none;"><a href="#" id="movie-name">Movie Name</a></li>
         </ul>
@@ -37,22 +37,23 @@
   <template id="movie-info-template">
     <div class="col s12 m4 l3">
       <div class="card">
+          <div class="card-favorite">
+              <a href="" class="favorite-button {{this.favorite}}" data-id="{{this.id}}">
+                <i class="material-icons">favorite</i>
+              </a>
+            </div> 
         <div class="card-image">
+             
           <img src="{{this.poster}}">
           <span class="card-title">{{this.title}}</span>
           <a class="detail-view-button btn-floating halfway-fab waves-effect waves-light red" href="#" data-id={{this.id}}>
             <i class="material-icons">add</i>            
           </a>
-        </div>        
+        </div>
+        <div class="star-wrapper" id="{{this.rateId}}">
+          {{this.ratingStars}}
+        </div>
         <div class="card-content">
-          <div class="row">
-            <div class="col s9 star-wrapper" id="{{this.rateId}}">
-              {{this.ratingStars}}
-            </div>
-            <!-- <div class="col s3 favourite-wrapper" id="{{this.favouriteId}}">
-              {{this.favourite}}
-            </div> -->
-          </div>
           <p>{{this.overview}}</p>
 
         </div>
@@ -79,10 +80,8 @@
   </template>
 
   <template id="youtube-video-template">
-    <div class="video-container">
-      <iframe src="https://www.youtube.com/embed/{{id}}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{id}}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen></iframe>
-    </div>   
   </template>
 
   <script src="js/app.js" type="module"></script>

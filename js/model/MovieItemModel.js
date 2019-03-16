@@ -1,7 +1,7 @@
 import APIDataModel from "./APIModel.js";
 
 class Movie extends APIDataModel{
-    constructor(id,title,poster,overview,link,rating, favourite){
+    constructor(id,title,poster,overview,link,rating, favourite,isFav){
         super();
         this.id = id;
         this.title = title;
@@ -10,10 +10,11 @@ class Movie extends APIDataModel{
         this.link =link;
         this.rating = rating; 
         this.favourite = favourite;   
+        this.isFavourite=isFav;
     }
 
     setRating(movieId, ratingValue){
-        //console.log("store in local"+ movieId +"value" + ratingValue);
+        console.log("store in local"+ movieId +"value" + ratingValue);
         this.rating = ratingValue;
         localStorage.setItem(movieId, ratingValue);
     }
@@ -22,34 +23,6 @@ class Movie extends APIDataModel{
         return localStorage.getItem(this.id);
     }
     
-    setFavourite(key, movieId){
-        //console.log("store in local"+ movieId );
-        const favouriteArray =[];
-        const data = JSON.parse(localStorage.getItem(key));
-        if (data) {
-            //localStorage.removeItem(key);
-            const valueToRemove = data.indexOf(movieId);
-            //console.log(valueToRemove);
-            if(valueToRemove > -1){
-                data.splice(valueToRemove, 1);
-                //console.log(data);
-                localStorage.setItem(key, JSON.stringify(data));
-            }
-            else{
-                data.push(movieId);
-                localStorage.setItem(key, JSON.stringify(data));
-            }                                    
-        }
-        else{
-            favouriteArray.push(movieId);
-            localStorage.setItem(key, JSON.stringify(favouriteArray));
-        }
-
-    }
-
-    getFavourite(){
-        return localStorage.getItem(this.id);
-    }
 
     getDetailApiUrl(movie_id,key){
         return this.generateURL(this.detail_path,movie_id,key);
@@ -67,22 +40,28 @@ class Movie extends APIDataModel{
         //Get movie detail
         const fetchResult = await fetch(this.getDetailApiUrl(movie_id,key));
         const jsonData = await fetchResult.json();
+        console.log(jsonData);
 
         //Get videos of the current movie
         const fetchVideo = await fetch(this.getVideoApiURL(movie_id,key));
         const videoJsonData = await fetchVideo.json();
+        console.log(videoJsonData);
 
         const convertedPromise = this.updateData(jsonData,videoJsonData.results);
         return convertedPromise;
     }
 
     updateData(data,videos){
+        console.log(data);
         this.id = data.id;
         this.title = data.original_title;
         this.poster = data.backdrop_path;
         this.overview = data.overview;
         this.videos = videos;
         return this;
+    }
+    updateFavourite(favList){
+        this.isFavourite=favList.includes(this.id.toString());
     }
 
 }

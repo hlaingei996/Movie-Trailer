@@ -5,13 +5,6 @@ class MovieListView {
         this.videoTemplate = document.getElementById("youtube-video-template").innerHTML;
         this.viewport = document.getElementById("viewport");        
         this.viewport.addEventListener('click',(event)=>this.listViewBtnListener(event));
-        this.home = document.getElementById('home');
-        this.home.addEventListener('click', (event) => this.homeBtnListener(event));
-    }
-
-    homeBtnListener(event){
-        event.preventDefault();
-        this.controller.changeListView();
     }
 
     listViewBtnListener(event){
